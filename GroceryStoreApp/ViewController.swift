@@ -13,15 +13,33 @@ import UserNotifications
 
 
 class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
-
+    
     
         var locationManager: CLLocationManager!
         var placesClient: GMSPlacesClient!
+        var location : String = String()
+    
         
         // Add a pair of UILabels in Interface Builder, and connect the outlets to these variables.
         @IBOutlet var nameLabel: UILabel!
     
-
+    @IBAction func localNotification(_ sender: Any) {
+        let content = UNMutableNotificationContent()
+        content.title = NSString.localizedUserNotificationString(forKey:
+            "Your notification title", arguments: nil)
+        content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
+        content.categoryIdentifier = "Your notification category"
+        content.sound = UNNotificationSound.default()
+        content.badge = 1
+        
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        
+    }
+    
         override func viewDidLoad() {
             super.viewDidLoad()
             
@@ -31,15 +49,55 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             locationManager.requestAlwaysAuthorization()
             placesClient = GMSPlacesClient.shared()
             checkCoreLocationPermission()
+        
+            
+            //http post to server
+            let myUrl = URL(string: "http://10.0.1.44/push_notifications/push2.php");
+            var request = URLRequest(url:myUrl!)
+            request.httpMethod = "POST"// Compose a query string
+            let postString = "firstName=James&lastName=Bond";
+            request.httpBody = postString.data(using: String.Encoding.utf8);
+            
+            let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+                if error != nil
+                {
+                    print("error=\(error!)")
+                    return
+                }
+                
+                // You can print out response object
+                let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
+                print("response = \(response!)")
+                
+                //convert response sent from a server side script to a NSDictionary object:
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                    
+                    if let parseJSON = json {
+                        // Now we can access value of First Name by its key
+                        let firstNameValue = parseJSON["firstName"] as? String
+                        print("firstNameValue: \(firstNameValue!)")
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+            task.resume()
         }
     
+    //sending device token to server
+//    func testFunction (for token: String){
+//        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+//            print("device token from delegate: \(appDelegate.token)")
+//        }
+//
+//    }
+
 
     
     // Add a UIButton in Interface Builder, and connect the action to this function.
-    
-    
     @IBAction func getCurrentPlace(_ sender: Any) {
-    
+        
     
             placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
                 if let error = error {
@@ -49,17 +107,41 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                 
                 self.nameLabel.text = "No current place"
                 
-                
                 if let placeLikelihoodList = placeLikelihoodList {
                     let place = placeLikelihoodList.likelihoods.first?.place
+                    let location = place!.name
                     if let place = place {
                         self.nameLabel.text = place.name
+                        self.sendLocation(location: location)
                         
                     }
                 }
-                
             })
+        
         }
+    
+    func sendLocation(location: String){
+        print(location)
+        let myUrl = URL(string: "http://10.0.1.44/push_notifications/location.php");
+        var request = URLRequest(url:myUrl!)
+        request.httpMethod = "POST"// Compose a query string
+        let postString = "location=\(location)";
+        request.httpBody = postString.data(using: String.Encoding.utf8);
+        
+        let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            if error != nil
+            {
+                print("error=\(error!)")
+                return
+            }
+            
+            // You can print out response object
+            let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
+            print("response = \(response!)")
+        }
+        
+        task.resume()
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -105,17 +187,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         MyTableView.reloadData()
     }
     
+
+
+    func sendNotification () {
+        let content = UNMutableNotificationContent()
+        content.title = NSString.localizedUserNotificationString(forKey:
+            "Your notification title", arguments: nil)
+        content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
+        content.categoryIdentifier = "Your notification category"
+        content.sound = UNNotificationSound.default()
+        content.badge = 1
+        
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        
+    }
+
 }
-
-func sendNotification () {
-let content = UNMutableNotificationContent()
-content.title = NSString.localizedUserNotificationString(forKey:
-    "Your notification title", arguments: nil)
-content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
-content.categoryIdentifier = "Your notification category"
-content.sound = UNNotificationSound.default()
-content.badge = 1
-    
-}
-
-

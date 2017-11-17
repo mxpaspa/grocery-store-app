@@ -12,9 +12,11 @@ import UserNotifications
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
+    var token: String?
+   
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -66,6 +68,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler(.alert)
+    }
+    
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
@@ -75,7 +81,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let token = tokenParts.joined()
         print("Device Token: \(token)")
+        
+        let myUrl = URL(string: "http://10.0.1.44/push_notifications/token.php");
+        var request = URLRequest(url:myUrl!)
+        request.httpMethod = "POST"// Compose a query string
+        let postString = "deviceToken=\(token)";
+        request.httpBody = postString.data(using: String.Encoding.utf8);
+        
+        let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            if error != nil
+            {
+                print("error=\(error!)")
+                return
+            }
+            
+            // You can print out response object
+            let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
+            print("response = \(response!)")
+        
+        }
+        task.resume()
     }
+    
     
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Error) {
