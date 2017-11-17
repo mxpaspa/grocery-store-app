@@ -22,8 +22,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         
         GMSPlacesClient.provideAPIKey("AIzaSyCPCxul04Cq5bGkHw693AblPDAMb3UEfQM")
-        registerForPushNotifications()
+//        registerForPushNotifications()
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound, .badge]) { (allowed, error) in
+            //
+        }
+        
+        UNUserNotificationCenter.current().delegate = self
         return true
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler(.alert)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -68,9 +77,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler(.alert)
-    }
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

@@ -52,37 +52,37 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         
             
             //http post to server
-            let myUrl = URL(string: "http://10.0.1.44/push_notifications/push2.php");
-            var request = URLRequest(url:myUrl!)
-            request.httpMethod = "POST"// Compose a query string
-            let postString = "firstName=James&lastName=Bond";
-            request.httpBody = postString.data(using: String.Encoding.utf8);
-            
-            let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-                if error != nil
-                {
-                    print("error=\(error!)")
-                    return
-                }
-                
-                // You can print out response object
-                let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
-                print("response = \(response!)")
-                
-                //convert response sent from a server side script to a NSDictionary object:
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
-                    
-                    if let parseJSON = json {
-                        // Now we can access value of First Name by its key
-                        let firstNameValue = parseJSON["firstName"] as? String
-                        print("firstNameValue: \(firstNameValue!)")
-                    }
-                } catch {
-                    print(error)
-                }
-            }
-            task.resume()
+//            let myUrl = URL(string: "http://10.0.1.44/push_notifications/push2.php");
+//            var request = URLRequest(url:myUrl!)
+//            request.httpMethod = "POST"// Compose a query string
+//            let postString = "firstName=James&lastName=Bond";
+//            request.httpBody = postString.data(using: String.Encoding.utf8);
+//
+//            let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+//                if error != nil
+//                {
+//                    print("error=\(error!)")
+//                    return
+//                }
+//
+//                // You can print out response object
+//                let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
+//                print("response = \(response!)")
+//
+//                //convert response sent from a server side script to a NSDictionary object:
+//                do {
+//                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+//
+//                    if let parseJSON = json {
+//                        // Now we can access value of First Name by its key
+//                        let firstNameValue = parseJSON["firstName"] as? String
+//                        print("firstNameValue: \(firstNameValue!)")
+//                    }
+//                } catch {
+//                    print(error)
+//                }
+//            }
+//            task.resume()
         }
     
     //sending device token to server
@@ -98,7 +98,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     // Add a UIButton in Interface Builder, and connect the action to this function.
     @IBAction func getCurrentPlace(_ sender: Any) {
         
-    
+        
             placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
                 if let error = error {
                     print("Pick Place error: \(error.localizedDescription)")
@@ -113,7 +113,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                     if let place = place {
                         self.nameLabel.text = place.name
                         self.sendLocation(location: location)
-                        
+                        if location.contains("161") {
+                            self.sendNotification()
+                        }
                     }
                 }
             })
