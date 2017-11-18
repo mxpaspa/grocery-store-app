@@ -22,9 +22,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         
         // Add a pair of UILabels in Interface Builder, and connect the outlets to these variables.
         @IBOutlet var nameLabel: UILabel!
+        @IBOutlet var currentLocation: UILabel!
+    
     
     @IBAction func localNotification(_ sender: Any) {
         let content = UNMutableNotificationContent()
+        
         content.title = NSString.localizedUserNotificationString(forKey:
             "Your notification title", arguments: nil)
         content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
@@ -37,7 +40,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-        
     }
     
         override func viewDidLoad() {
@@ -49,6 +51,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             locationManager.requestAlwaysAuthorization()
             placesClient = GMSPlacesClient.shared()
             checkCoreLocationPermission()
+            locationManager.startUpdatingLocation()
+            updateLocation()
+            
+            
         
             
             //http post to server
@@ -93,7 +99,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //
 //    }
 
-
+    func updateLocation(){
+        placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
+            if let error = error {
+                print("Pick Place error: \(error.localizedDescription)")
+                return
+            }
+            
+            self.nameLabel.text = "No current place"
+            
+            if let placeLikelihoodList = placeLikelihoodList {
+                let place = placeLikelihoodList.likelihoods.first?.place
+                let location = place!.name
+                if let place = place {
+                    self.currentLocation.text = place.name
+                    
+                    if location.contains("161") {
+                        self.sendNotification()
+                    }
+                }
+            }
+        })
+    }
+    
     
     // Add a UIButton in Interface Builder, and connect the action to this function.
     @IBAction func getCurrentPlace(_ sender: Any) {
@@ -119,7 +147,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                     }
                 }
             })
-        
         }
     
     func sendLocation(location: String){
