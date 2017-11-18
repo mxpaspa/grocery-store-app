@@ -12,7 +12,7 @@ import CoreLocation
 import UserNotifications
 
 
-class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate{
     
     
         var locationManager: CLLocationManager!
@@ -27,15 +27,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
     @IBAction func localNotification(_ sender: Any) {
         let content = UNMutableNotificationContent()
-        
         content.title = NSString.localizedUserNotificationString(forKey:
             "Your notification title", arguments: nil)
         content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
         content.categoryIdentifier = "Your notification category"
         content.sound = UNNotificationSound.default()
         content.badge = 1
-        
-        
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
         
@@ -44,6 +41,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
         override func viewDidLoad() {
             super.viewDidLoad()
+            
+            self.input.delegate = self
             
             locationManager = CLLocationManager()
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -209,6 +208,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         }
     }
     
+    //input field stuff
     @IBOutlet var input: UITextField!
     @IBAction func addItem(_ sender: Any) {
         list.append(input.text!)
@@ -216,7 +216,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         MyTableView.reloadData()
     }
     
-
+//    //hide keyboard when user touches outisde the keyboard
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        self.view.endEditing(true)
+//    }
+    
+    //return hides software keyboard
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        addItem(input)
+        return(true)
+    }
 
     func sendNotification () {
         let content = UNMutableNotificationContent()
