@@ -218,7 +218,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
     //input field stuff
     
-    @IBAction func addItem(_ sender: Any) {
+    func addItem(_ sender: Any) {
         list.append(input.text!)
         input.text = ""
         MyTableView.reloadData()
@@ -229,7 +229,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //        self.view.endEditing(true)
 //    }
     
-    //changed return to done, done will now add items to list
+    //changed return to done, done will now add items to 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         addItem(input)
