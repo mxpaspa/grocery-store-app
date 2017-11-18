@@ -20,15 +20,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         var location : String = String()
     
         
-        // Add a pair of UILabels in Interface Builder, and connect the outlets to these variables.
+        @IBOutlet var locationSetting: UILabel!
+    // Add a pair of UILabels in Interface Builder, and connect the outlets to these variables.
         @IBOutlet var nameLabel: UILabel!
         @IBOutlet var currentLocation: UILabel!
+        @IBOutlet var input: UITextField!
     
     
     @IBAction func localNotification(_ sender: Any) {
         let content = UNMutableNotificationContent()
-        content.title = NSString.localizedUserNotificationString(forKey:
-            "Your notification title", arguments: nil)
+        content.title = NSString.localizedUserNotificationString(forKey:"Your notification title", arguments: nil)
         content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
         content.categoryIdentifier = "Your notification category"
         content.sound = UNNotificationSound.default()
@@ -37,12 +38,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-    }
+}
+    
+        let userDefaults = UserDefaults.standard
     
         override func viewDidLoad() {
             super.viewDidLoad()
             
             self.input.delegate = self
+            input.returnKeyType = UIReturnKeyType.done
             
             locationManager = CLLocationManager()
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -53,7 +57,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             locationManager.startUpdatingLocation()
             updateLocation()
             
-            
+            UserDefaults.standard.register(defaults: [String : Any]())
         
             
             //http post to server
@@ -109,11 +113,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             
             if let placeLikelihoodList = placeLikelihoodList {
                 let place = placeLikelihoodList.likelihoods.first?.place
+                let location_test = self.userDefaults.string(forKey: "location_preference")
+                let final_location_test = location_test?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                print(final_location_test as Any)
+                self.locationSetting.text = final_location_test
                 let location = place!.name
                 if let place = place {
                     self.currentLocation.text = place.name
                     
-                    if location.contains("161") {
+                    if location == final_location_test{
                         self.sendNotification()
                     }
                 }
@@ -140,7 +148,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                     if let place = place {
                         self.nameLabel.text = place.name
                         self.sendLocation(location: location)
-                        if location.contains("161") {
+                        if location.contains("Inf") {
                             self.sendNotification()
                         }
                     }
@@ -209,7 +217,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     }
     
     //input field stuff
-    @IBOutlet var input: UITextField!
+    
     @IBAction func addItem(_ sender: Any) {
         list.append(input.text!)
         input.text = ""
@@ -221,7 +229,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //        self.view.endEditing(true)
 //    }
     
-    //return hides software keyboard
+    //changed return to done, done will now add items to list
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         addItem(input)

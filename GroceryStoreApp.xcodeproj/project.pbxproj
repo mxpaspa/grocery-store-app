@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		300B3A181F801EF3008110D1 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 300B3A171F801EF3008110D1 /* CoreLocation.framework */; };
 		300B3A1B1F8164DA008110D1 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 300B3A1A1F8164DA008110D1 /* UserNotifications.framework */; };
+		301904E01FC0A7C70098FBB0 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 301904DF1FC0A7C70098FBB0 /* Settings.bundle */; };
 		309A844F1F79CC4700AACF26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A844E1F79CC4700AACF26 /* AppDelegate.swift */; };
 		309A84511F79CC4700AACF26 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309A84501F79CC4700AACF26 /* ViewController.swift */; };
 		309A84541F79CC4700AACF26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 309A84521F79CC4700AACF26 /* Main.storyboard */; };
@@ -44,6 +45,7 @@
 		1ADF6F839D0BA0570EBCD9C8 /* Pods-GroceryStoreApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GroceryStoreApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-GroceryStoreApp/Pods-GroceryStoreApp.release.xcconfig"; sourceTree = "<group>"; };
 		300B3A171F801EF3008110D1 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		300B3A1A1F8164DA008110D1 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		301904DF1FC0A7C70098FBB0 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		309A844B1F79CC4700AACF26 /* GroceryStoreApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroceryStoreApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		309A844E1F79CC4700AACF26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		309A84501F79CC4700AACF26 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			children = (
 				30F8A9A41F818BB20048AD16 /* GroceryStoreApp.entitlements */,
 				309A844E1F79CC4700AACF26 /* AppDelegate.swift */,
+				301904DF1FC0A7C70098FBB0 /* Settings.bundle */,
 				309A84501F79CC4700AACF26 /* ViewController.swift */,
 				309A84521F79CC4700AACF26 /* Main.storyboard */,
 				309A84551F79CC4700AACF26 /* Assets.xcassets */,
@@ -303,6 +306,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				301904E01FC0A7C70098FBB0 /* Settings.bundle in Resources */,
 				309A84591F79CC4700AACF26 /* LaunchScreen.storyboard in Resources */,
 				309A84561F79CC4700AACF26 /* Assets.xcassets in Resources */,
 				309A84541F79CC4700AACF26 /* Main.storyboard in Resources */,

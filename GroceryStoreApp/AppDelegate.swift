@@ -28,6 +28,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         UNUserNotificationCenter.current().delegate = self
+        
+        application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
+
         return true
     }
     
