@@ -18,29 +18,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         var locationManager: CLLocationManager!
         var placesClient: GMSPlacesClient!
         var location : String = String()
+        private var notification: NSObjectProtocol?
     
-        
+    
         @IBOutlet var locationSetting: UILabel!
     // Add a pair of UILabels in Interface Builder, and connect the outlets to these variables.
         @IBOutlet var nameLabel: UILabel!
         @IBOutlet var currentLocation: UILabel!
         @IBOutlet var input: UITextField!
     
-    
-    @IBAction func localNotification(_ sender: Any) {
-        let content = UNMutableNotificationContent()
-        content.title = NSString.localizedUserNotificationString(forKey:"Your notification title", arguments: nil)
-        content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
-        content.categoryIdentifier = "Your notification category"
-        content.sound = UNNotificationSound.default()
-        content.badge = 1
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-}
-    
         let userDefaults = UserDefaults.standard
+    
+//    //test function
+//    @IBAction func localNotification(_ sender: Any) {
+//        let content = UNMutableNotificationContent()
+//        content.title = NSString.localizedUserNotificationString(forKey:"Your notification title", arguments: nil)
+//        content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
+//        content.categoryIdentifier = "Your notification category"
+//        content.sound = UNNotificationSound.default()
+//        content.badge = 1
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+//        let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
+//
+//        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+//        }
+    
+    
     
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -59,7 +62,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             
             UserDefaults.standard.register(defaults: [String : Any]())
         
+//            notification = NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: nil, queue: .main) {
+//                [unowned self] notification in
+//            }
             
+            notification = NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: nil, queue: .main) {
+                [unowned self] notification in
+                let location_test = self.userDefaults.string(forKey: "location_preference")
+                let final_location_test = location_test?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                print(final_location_test as Any)
+                self.locationSetting.text = final_location_test
+                
+                // do whatever you want when the app is brought back to the foreground
+            }
+            
+            
+
             //http post to server
 //            let myUrl = URL(string: "http://10.0.1.44/push_notifications/push2.php");
 //            var request = URLRequest(url:myUrl!)
@@ -99,6 +117,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
 //            print("device token from delegate: \(appDelegate.token)")
 //        }
+//
+//    }
+    
+//    @objc func appWillEnterForeground () {
 //
 //    }
 
@@ -224,17 +246,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         MyTableView.reloadData()
     }
     
-//    //hide keyboard when user touches outisde the keyboard
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        self.view.endEditing(true)
-//    }
-    
     //changed return to done, done will now add items to 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         addItem(input)
         return(true)
     }
+    
+//    //hide keyboard when user touches outisde the keyboard
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        inputField.resignFirstResponder()
+//        self.view.endEditing(true)
+//    }
 
     func sendNotification () {
         let content = UNMutableNotificationContent()
@@ -246,11 +269,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         content.badge = 1
         
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
         let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
         
     }
+    
+//    func renew(){
+//        //reload application data (renew root view )
+//        UIApplication.shared.keyWindow?.rootViewController = storyboard!.instantiateViewController(withIdentifier: "list_view")
+//    }
 
 }
