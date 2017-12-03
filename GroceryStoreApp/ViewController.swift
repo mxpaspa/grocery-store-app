@@ -19,6 +19,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         var placesClient: GMSPlacesClient!
         var location : String = String()
         private var notification: NSObjectProtocol?
+    private var backgroundNotification: NSObjectProtocol?
     
     
         @IBOutlet var locationSetting: UILabel!
@@ -66,6 +67,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //                [unowned self] notification in
 //            }
             
+            //saves settings information
             notification = NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: nil, queue: .main) {
                 [unowned self] notification in
                 let location_test = self.userDefaults.string(forKey: "location_preference")
@@ -77,6 +79,36 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             }
             
             
+            backgroundNotification = NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) {
+                [unowned self] backgroundNotification in
+                func updateLocation(){
+                    self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
+                        if let error = error {
+                            print("Pick Place error: \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        
+                        
+                        if let placeLikelihoodList = placeLikelihoodList {
+                            let place = placeLikelihoodList.likelihoods.first?.place
+                            let location_test = self.userDefaults.string(forKey: "location_preference")
+                            let final_location_test = location_test?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                            print(final_location_test as Any)
+                            self.locationSetting.text = final_location_test
+                            let location = place!.name
+                            if let place = place {
+                                self.currentLocation.text = place.name
+                                
+                                if location == final_location_test{
+                                    self.sendNotification()
+                                }
+                            }
+                        }
+                    })
+                }
+                
+            }
 
             //http post to server
 //            let myUrl = URL(string: "http://10.0.1.44/push_notifications/push2.php");
@@ -178,6 +210,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             })
         }
     
+//sends location information to server
     func sendLocation(location: String){
         print(location)
         let myUrl = URL(string: "http://10.0.1.44/push_notifications/location.php");
@@ -185,19 +218,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         request.httpMethod = "POST"// Compose a query string
         let postString = "location=\(location)";
         request.httpBody = postString.data(using: String.Encoding.utf8);
-        
+
         let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
             if error != nil
             {
                 print("error=\(error!)")
                 return
             }
-            
+
             // You can print out response object
             let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
             print("response = \(response!)")
         }
-        
+
         task.resume()
     }
     

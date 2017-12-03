@@ -10,6 +10,7 @@ import UIKit
 import GooglePlaces
 import CoreLocation
 
+
 import UserNotifications
 
 
@@ -18,7 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     var window: UIWindow?
     var token: String?
-   
+    var locationManager: CLLocationManager!
+    var placesClient: GMSPlacesClient!
+    var backgroundLocation: String?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -52,16 +55,72 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
+    
+    
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
-            let lastLocation = locations.last!
-            
-            // Do something with the location.
-        }
+//
+        locationManager = CLLocationManager()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        locationManager.requestAlwaysAuthorization()
+        placesClient = GMSPlacesClient.shared()
+        
+        locationManager.startUpdatingLocation()
+        sendBackgroundLocation()
+        
     }
+        
+    
+        func sendBackgroundLocation(){
+        self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
+            if let error = error {
+                print("Pick Place error: \(error.localizedDescription)")
+                return
+            }
+            
+            
+            
+            if let placeLikelihoodList = placeLikelihoodList {
+                let place = placeLikelihoodList.likelihoods.first?.place
+                
+                let backgroundLocation = place!.name
+                let testLocation = "Harris Teeter"
+                if let place = place {
+                    self.backgroundLocation = place.name
+                    print (backgroundLocation)
+                    if backgroundLocation == testLocation{
+                        self.sendNotification()
+                    }
+                    
+                }
+            }
+        })
+    }
+    
 
+    func sendNotification () {
+        let content = UNMutableNotificationContent()
+        content.title = NSString.localizedUserNotificationString(forKey:
+            "Your notification title", arguments: nil)
+        content.body = NSString.localizedUserNotificationString(forKey: "Your notification body", arguments: nil)
+        content.categoryIdentifier = "Your notification category"
+        content.sound = UNNotificationSound.default()
+        content.badge = 1
+        
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
+        let request = UNNotificationRequest(identifier: "any", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        
+    }
+       
+
+
+
+    
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
@@ -96,8 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     
-    func application(_ application: UIApplication,
-                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
         let tokenParts = deviceToken.map { data -> String in
             return String(format: "%02.2hhx", data)
