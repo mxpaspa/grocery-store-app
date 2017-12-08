@@ -15,7 +15,7 @@ import UserNotifications
 class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate{
     
     
-        var locationManager: CLLocationManager!
+//        var locationManager: CLLocationManager!
         var placesClient: GMSPlacesClient!
         var location : String = String()
         private var notification: NSObjectProtocol?
@@ -45,28 +45,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //        }
     
     
+        let locationManager = CLLocationManager()
     
         override func viewDidLoad() {
             super.viewDidLoad()
             
-            self.input.delegate = self
-            input.returnKeyType = UIReturnKeyType.done
+//            self.input.delegate = self
+//            input.returnKeyType = UIReturnKeyType.done
+//
+//            locationManager = CLLocationManager()
+//            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//            locationManager.delegate = self
+//            locationManager.requestAlwaysAuthorization()
+//            placesClient = GMSPlacesClient.shared()
+//            checkCoreLocationPermission()
+//            locationManager.startUpdatingLocation()
+//            updateLocation()
             
-            locationManager = CLLocationManager()
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.delegate = self
             locationManager.requestAlwaysAuthorization()
-            placesClient = GMSPlacesClient.shared()
-            checkCoreLocationPermission()
-            locationManager.startUpdatingLocation()
-            updateLocation()
-            
             
             if CLLocationManager.locationServicesEnabled(){
                 locationManager.delegate = self
                 locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                locationManager.allowsBackgroundLocationUpdates = true
                 locationManager.startUpdatingLocation()
             }
+            
             
             
             
@@ -88,36 +92,36 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             }
             
             
-            backgroundNotification = NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) {
-                [unowned self] backgroundNotification in
-                func updateLocation(){
-                    self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
-                        if let error = error {
-                            print("Pick Place error: \(error.localizedDescription)")
-                            return
-                        }
-                        
-                        
-                        
-                        if let placeLikelihoodList = placeLikelihoodList {
-                            let place = placeLikelihoodList.likelihoods.first?.place
-                            let location_test = self.userDefaults.string(forKey: "location_preference")
-                            let final_location_test = location_test?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-                            print(final_location_test as Any)
-                            self.locationSetting.text = final_location_test
-                            let location = place!.name
-                            if let place = place {
-                                self.currentLocation.text = place.name
-                                
-                                if location == final_location_test{
-                                    self.sendNotification()
-                                }
-                            }
-                        }
-                    })
-                }
-                
-            }
+//            backgroundNotification = NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: .main) {
+//                [unowned self] backgroundNotification in
+//                func updateLocation(){
+//                    self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
+//                        if let error = error {
+//                            print("Pick Place error: \(error.localizedDescription)")
+//                            return
+//                        }
+//
+//
+//
+//                        if let placeLikelihoodList = placeLikelihoodList {
+//                            let place = placeLikelihoodList.likelihoods.first?.place
+//                            let location_test = self.userDefaults.string(forKey: "location_preference")
+//                            let final_location_test = location_test?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+//                            print(final_location_test as Any)
+//                            self.locationSetting.text = final_location_test
+//                            let location = place!.name
+//                            if let place = place {
+//                                self.currentLocation.text = place.name
+//
+//                                if location == final_location_test{
+//                                    self.sendNotification()
+//                                }
+//                            }
+//                        }
+//                    })
+//                }
+//
+//            }
 
             //http post to server
 //            let myUrl = URL(string: "http://10.0.1.44/push_notifications/push2.php");
@@ -165,32 +169,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //
 //    }
 
-    func updateLocation(){
-        placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
-            if let error = error {
-                print("Pick Place error: \(error.localizedDescription)")
-                return
-            }
-            
-            self.nameLabel.text = "No current place"
-            
-            if let placeLikelihoodList = placeLikelihoodList {
-                let place = placeLikelihoodList.likelihoods.first?.place
-                let location_test = self.userDefaults.string(forKey: "location_preference")
-                let final_location_test = location_test?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-                print(final_location_test as Any)
-                self.locationSetting.text = final_location_test
-                let location = place!.name
-                if let place = place {
-                    self.currentLocation.text = place.name
-                    
-                    if location == final_location_test{
-                        self.sendNotification()
-                    }
-                }
-            }
-        })
-    }
+//    func updateLocation(){
+//        placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
+//            if let error = error {
+//                print("Pick Place error: \(error.localizedDescription)")
+//                return
+//            }
+//
+//            self.nameLabel.text = "No current place"
+//
+//            if let placeLikelihoodList = placeLikelihoodList {
+//                let place = placeLikelihoodList.likelihoods.first?.place
+//                let location_test = self.userDefaults.string(forKey: "location_preference")
+//                let final_location_test = location_test?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+//                print(final_location_test as Any)
+//                self.locationSetting.text = final_location_test
+//                let location = place!.name
+//                if let place = place {
+//                    self.currentLocation.text = place.name
+//
+//                    if location == final_location_test{
+//                        self.sendNotification()
+//                    }
+//                }
+//            }
+//        })
+//    }
     
     
     // Add a UIButton in Interface Builder, and connect the action to this function.
@@ -345,6 +349,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         if let location = locations.first {
             print(location.coordinate)
         }
+        
+        
+        
     }
     
     

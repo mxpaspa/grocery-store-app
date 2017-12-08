@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string></string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -23,7 +25,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Need location for location based reminders</string>
+	<string>Some Reason Here</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>test</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Some Reason Here</string>
 	<key>UIBackgroundModes</key>

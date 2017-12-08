@@ -44,17 +44,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         completionHandler(.alert)
     }
     
-    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        locationManager = CLLocationManager()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        
-        locationManager.requestAlwaysAuthorization()
-        placesClient = GMSPlacesClient.shared()
-        
-        locationManager.startUpdatingLocation()
-        print("updating background after app minimized")
-        sendNotification()
-    }
+//    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//        locationManager = CLLocationManager()
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//
+//        locationManager.requestAlwaysAuthorization()
+//        placesClient = GMSPlacesClient.shared()
+//
+//        locationManager.startUpdatingLocation()
+//        print("updating background after app minimized")
+//        sendNotification()
+//    }
     
 //    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
 //        <#code#>
@@ -68,47 +68,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     
     
-    func applicationDidEnterBackground(_ application: UIApplication) {
+//    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 //
-        locationManager = CLLocationManager()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        
-        locationManager.requestAlwaysAuthorization()
-        placesClient = GMSPlacesClient.shared()
-        
-        locationManager.startUpdatingLocation()
-        sendBackgroundLocation()
-        
-    }
-    
-    
-    func sendBackgroundLocation(){
-    self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
-        if let error = error {
-            print("Pick Place error: \(error.localizedDescription)")
-            return
-        }
-        
-        
-        
-        if let placeLikelihoodList = placeLikelihoodList {
-            let place = placeLikelihoodList.likelihoods.first?.place
-            
-            let backgroundLocation = place!.name
-            let testLocation = "Harris Teeter"
-            if let place = place {
-                self.backgroundLocation = place.name
-                print (backgroundLocation)
-                if backgroundLocation == testLocation{
-                    self.sendNotification()
-                    }
-                
-                }
-            }
-        })
-    }
+//        locationManager = CLLocationManager()
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//
+//        locationManager.requestAlwaysAuthorization()
+//        placesClient = GMSPlacesClient.shared()
+//
+//        locationManager.startUpdatingLocation()
+//        sendBackgroundLocation()
+//
+//    }
+//
+//
+//    func sendBackgroundLocation(){
+//    self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
+//        if let error = error {
+//            print("Pick Place error: \(error.localizedDescription)")
+//            return
+//        }
+//
+//
+//
+//        if let placeLikelihoodList = placeLikelihoodList {
+//            let place = placeLikelihoodList.likelihoods.first?.place
+//
+//            let backgroundLocation = place!.name
+//            let testLocation = "Harris Teeter"
+//            if let place = place {
+//                self.backgroundLocation = place.name
+//                print (backgroundLocation)
+//                if backgroundLocation == testLocation{
+//                    self.sendNotification()
+//                    }
+//
+//                }
+//            }
+//        })
+//    }
     
 
     func sendNotification () {
@@ -145,15 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-    func getNotificationSettings() {
-        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-            print("Notification settings: \(settings)")
-            guard settings.authorizationStatus == .authorized else { return }
-            DispatchQueue.main.async(execute: {
-                UIApplication.shared.registerForRemoteNotifications()
-            })
-        }
-    }
+   
     
     func registerForPushNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
@@ -162,6 +154,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
             guard granted else { return }
             self.getNotificationSettings()
+        }
+    }
+    
+    func getNotificationSettings() {
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            print("Notification settings: \(settings)")
+            guard settings.authorizationStatus == .authorized else { return }
+            DispatchQueue.main.async(execute: {
+                UIApplication.shared.registerForRemoteNotifications()
+            })
         }
     }
     
@@ -202,4 +204,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
 }
-
