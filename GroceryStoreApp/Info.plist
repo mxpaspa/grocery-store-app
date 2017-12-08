@@ -23,7 +23,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Some Reason Here</string>
+	<string>Need location for location based reminders</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Some Reason Here</string>
 	<key>UIBackgroundModes</key>

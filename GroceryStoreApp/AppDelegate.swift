@@ -33,9 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         UNUserNotificationCenter.current().delegate = self
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
-
+        UIApplication.shared.setMinimumBackgroundFetchInterval( 5 )
+//        application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
         
         return true
     }
@@ -43,6 +42,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler(.alert)
+    }
+    
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        locationManager = CLLocationManager()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        locationManager.requestAlwaysAuthorization()
+        placesClient = GMSPlacesClient.shared()
+        
+        locationManager.startUpdatingLocation()
+        print("updating background after app minimized")
+        sendNotification()
     }
     
 //    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -71,29 +82,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         sendBackgroundLocation()
         
     }
-        
     
-        func sendBackgroundLocation(){
-        self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
-            if let error = error {
-                print("Pick Place error: \(error.localizedDescription)")
-                return
-            }
+    
+    func sendBackgroundLocation(){
+    self.placesClient.currentPlace(callback: { (placeLikelihoodList, error) -> Void in
+        if let error = error {
+            print("Pick Place error: \(error.localizedDescription)")
+            return
+        }
+        
+        
+        
+        if let placeLikelihoodList = placeLikelihoodList {
+            let place = placeLikelihoodList.likelihoods.first?.place
             
-            
-            
-            if let placeLikelihoodList = placeLikelihoodList {
-                let place = placeLikelihoodList.likelihoods.first?.place
-                
-                let backgroundLocation = place!.name
-                let testLocation = "Harris Teeter"
-                if let place = place {
-                    self.backgroundLocation = place.name
-                    print (backgroundLocation)
-                    if backgroundLocation == testLocation{
-                        self.sendNotification()
+            let backgroundLocation = place!.name
+            let testLocation = "Harris Teeter"
+            if let place = place {
+                self.backgroundLocation = place.name
+                print (backgroundLocation)
+                if backgroundLocation == testLocation{
+                    self.sendNotification()
                     }
-                    
+                
                 }
             }
         })

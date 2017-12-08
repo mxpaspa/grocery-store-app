@@ -61,6 +61,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             locationManager.startUpdatingLocation()
             updateLocation()
             
+            
+            if CLLocationManager.locationServicesEnabled(){
+                locationManager.delegate = self
+                locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                locationManager.startUpdatingLocation()
+            }
+            
+            
+            
             UserDefaults.standard.register(defaults: [String : Any]())
         
 //            notification = NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: nil, queue: .main) {
@@ -201,7 +210,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                     let location = place!.name
                     if let place = place {
                         self.nameLabel.text = place.name
-                        self.sendLocation(location: location)
+//                        self.sendLocation(location: location)
                         if location.contains("Inf") {
                             self.sendNotification()
                         }
@@ -211,28 +220,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         }
     
 //sends location information to server
-    func sendLocation(location: String){
-        print(location)
-        let myUrl = URL(string: "http://10.0.1.44/push_notifications/location.php");
-        var request = URLRequest(url:myUrl!)
-        request.httpMethod = "POST"// Compose a query string
-        let postString = "location=\(location)";
-        request.httpBody = postString.data(using: String.Encoding.utf8);
-
-        let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            if error != nil
-            {
-                print("error=\(error!)")
-                return
-            }
-
-            // You can print out response object
-            let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
-            print("response = \(response!)")
-        }
-
-        task.resume()
-    }
+//    func sendLocation(location: String){
+//        print(location)
+//        let myUrl = URL(string: "http://10.0.1.44/push_notifications/location.php");
+//        var request = URLRequest(url:myUrl!)
+//        request.httpMethod = "POST"// Compose a query string
+//        let postString = "location=\(location)";
+//        request.httpBody = postString.data(using: String.Encoding.utf8);
+//
+//        let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+//            if error != nil
+//            {
+//                print("error=\(error!)")
+//                return
+//            }
+//
+//            // You can print out response object
+//            let response = NSString(data: data!, encoding: String.Encoding.utf8.rawValue )
+//            print("response = \(response!)")
+//        }
+//
+//        task.resume()
+//    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -314,4 +323,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
 //        UIApplication.shared.keyWindow?.rootViewController = storyboard!.instantiateViewController(withIdentifier: "list_view")
 //    }
 
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+//        locationManager = CLLocationManager()
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//
+//        locationManager.requestAlwaysAuthorization()
+//        placesClient = GMSPlacesClient.shared()
+//
+//        locationManager.startUpdatingLocation()
+//        print("updated location")
+//        sendNotification()
+//
+//
+//
+//        if UIApplication.shared.applicationState == .active {
+//            print("wunderlich code")
+//        } else {
+//            print("App is backgrounded. New location is most recent code")
+//        }
+        if let location = locations.first {
+            print(location.coordinate)
+        }
+    }
+    
+    
 }
