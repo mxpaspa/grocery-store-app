@@ -9,6 +9,7 @@
 import UIKit
 import GooglePlaces
 import CoreLocation
+import CoreBluetooth
 
 
 import UserNotifications
@@ -16,12 +17,13 @@ import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-
+    
     var window: UIWindow?
     var token: String?
     var locationManager: CLLocationManager!
     var placesClient: GMSPlacesClient!
     var backgroundLocation: String?
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -177,7 +179,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let token = tokenParts.joined()
         print("Device Token: \(token)")
         
-        let myUrl = URL(string: "http://10.0.1.44/push_notifications/token.php");
+        let myUrl = URL(string: "");
         var request = URLRequest(url:myUrl!)
         request.httpMethod = "POST"// Compose a query string
         let postString = "deviceToken=\(token)";

@@ -667,7 +667,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.testcompanymax.aa.bb.abc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7a4ca79c-fb98-4f65-adeb-64f9571775cf";
+				PROVISIONING_PROFILE = "4b1b2e34-0685-49e9-94c6-f97c35415dd0";
 				PROVISIONING_PROFILE_SPECIFIER = "Max Paspa";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
